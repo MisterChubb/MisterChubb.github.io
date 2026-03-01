@@ -31,6 +31,10 @@ function aqauriumBG1(){
   fill("#6bc253"); // Light Seaweed (Left)
   triangle(120, 600, 200, 700, 190, 930);
 
+  fill("#31731f"); // Medium Seaweed (Left)
+  triangle(100, 600, 500, 500, 720, 900);
+
+
   fill("#2F4F4F"); // Dark Rocks
   circle(90, 870, 200);
   circle(200, 880, 100);
