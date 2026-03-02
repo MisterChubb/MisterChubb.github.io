@@ -9,6 +9,12 @@ function setup() {
   createCanvas(900, 900);
 }
 
+function artistMark(){
+  text("Miki Hoang", 750, 880);
+  textSize(24);
+  textFont("Serif");
+}
+
 function oceanBG(){
   background("#51719e");
   noStroke();
@@ -71,22 +77,55 @@ function oceanBG(){
 
 }
 
-function fishDiamond(){
-  noStroke();
+function fishDiamondStatic(){
   fill("#dbfc05");
-  triangle(320, 450, 360, 420, 360, 480);
+  //         front     top        bottom
+  triangle(320, 450, 360, 420, 360, 480); // Tail
   fill("#eb09d4");
-  quad(340, 450, 250, 400, 200, 450, 250, 470);
+  //     back     bottom     front     top
+  quad(340, 450, 250, 400, 200, 450, 250, 470); // Body
   fill("#dbfc05");
-  triangle(255, 435, 285, 445, 270, 430);
-  triangle(250, 470, 250, 400, 200, 450);
-  fill("#f5fcc7");
+  //         front    bottom     top
+  triangle(255, 435, 285, 445, 270, 430); // Fin
+  //         bottom     top       front
+  triangle(250, 470, 250, 400, 200, 450); // Face
+  fill("#f5fcc7"); // Eye White
   circle(235, 440, 20);
-  fill("#52024a");
+  fill("#52024a"); // Pupil
   circle(235, 440, 13);
+}
+
+
+
+function fishCircle(){
+  fill("#0ff288");
+  ellipse(450, 450, 200, 150);
+}
+
+
+function fish(){
+  fill("#dbfc05"); // Tail
+  triangle(mouseX + 120, mouseY, mouseX + 160, mouseY + 30, mouseX + 160, mouseY - 30);
+  fill("#eb09d4"); // Body
+  quad(mouseX + 140, mouseY, mouseX + 50, mouseY - 50, mouseX, mouseY, mouseX + 50, mouseY + 20);
+  fill("#dbfc05");
+  triangle(mouseX + 55, mouseY - 15, mouseX + 85, mouseY - 5, mouseX + 70, mouseY - 20); // Fin
+  triangle(mouseX + 50, mouseY + 20, mouseX + 50, mouseY - 50, mouseX, mouseY); // Face
+  fill("#faf8f7"); // Eye White
+  circle(mouseX + 35, mouseY - 10, 20);
+  fill("#52024a"); // Pupil
+  circle(mouseX + 35, mouseY - 10, 13);
+
+  if(keyIsPressed){
+    if(key === " "){
+
+    }
+  }
 }
 
 function draw() {
   oceanBG();
-  fishDiamond();
-}
+  artistMark();
+  fish();
+  fishCircle();
+ }
