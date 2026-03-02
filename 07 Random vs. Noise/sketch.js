@@ -6,6 +6,7 @@
 // GLOBAL VARIABLES
 let d1, d2;
 let minSize = 5; let maxSize = 200;
+let minPos = width
 let x1, x2, y1, y2;
 
 // VARIABLES FOR noise()
