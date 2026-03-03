@@ -98,8 +98,10 @@ function fishDiamondStatic(){
 
 
 function fishCircle(){
-  fill("#0ff288");
+  fill("#0af5dd");
   ellipse(450, 450, 200, 150);
+  fill("#0a21f5")
+  ellipse(400, 450, 100, 110);
 }
 
 
