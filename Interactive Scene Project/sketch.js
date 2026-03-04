@@ -5,6 +5,10 @@
 // (Short Description Goes Here)
 
 
+let fishType = fishDiamond
+let currentBack = 0
+let bgColour = "#51719e"
+
 function setup() {
   createCanvas(900, 900);
 }
@@ -16,7 +20,7 @@ function artistMark(){
 }
 
 function oceanBG(){
-  background("#51719e");
+  background(bgColour);
   noStroke();
 
   fill("#876a31"); // Sand
@@ -74,60 +78,114 @@ function oceanBG(){
   circle(790, 145, 25);
   circle(645, 245, 10);
 
-
 }
 
-function fishDiamondStatic(){
-  fill("#dbfc05");
-  //         front     top        bottom
-  triangle(320, 450, 360, 420, 360, 480); // Tail
-  fill("#eb09d4");
-  //     back     bottom     front     top
-  quad(340, 450, 250, 400, 200, 450, 250, 470); // Body
-  fill("#dbfc05");
-  //         front    bottom     top
-  triangle(255, 435, 285, 445, 270, 430); // Fin
-  //         bottom     top       front
-  triangle(250, 470, 250, 400, 200, 450); // Face
-  fill("#f5fcc7"); // Eye White
-  circle(235, 440, 20);
-  fill("#52024a"); // Pupil
-  circle(235, 440, 13);
+function fishSquare(){
+  fill("#6afa02");
+  square(mouseX + 140, mouseY + 30, 30);
+  square(mouseX + 170, mouseY + 10, 30);
+  square(mouseX + 170, mouseY + 50, 30);
+
+  fill("#fa0202");
+  rect(mouseX, mouseY, 150, 100);
+  rect(mouseX + 20, mouseY - 50, 10, 100);
+  rect(mouseX - 30, mouseY - 50, 50, 10);
+  rect(mouseX - 30, mouseY - 50, 10, 30);
+
+  fill("#6afa02");
+  rect(mouseX, mouseY, 60, 100);
+  rect(mouseX + 70, mouseY + 40, 30, 20);
+
+   fill("#e3fad2");
+  square(mouseX + 10, mouseY + 30, 30);
+  square(mouseX - 35, mouseY - 20, 20);
+
+  fill("#0d1c01");
+  square(mouseX + 15, mouseY + 35, 20);
 }
-
-
 
 function fishCircle(){
+  fill("#0a21f5");
+  circle(mouseX + 120, mouseY - 30, 70);
+  circle(mouseX + 120, mouseY + 20, 70);
+  circle(mouseX, mouseY - 60, 100);
+
   fill("#0af5dd");
-  ellipse(450, 450, 200, 150);
-  fill("#0a21f5")
-  ellipse(400, 450, 100, 110);
+  ellipse(mouseX, mouseY, 200, 150);
+
+  fill("#0a21f5");
+  circle(mouseX - 30, mouseY, 145);
+
+  fill("#f0f1fc");
+  circle(mouseX - 50, mouseY, 50);
+
+  fill("#01031a");
+  circle(mouseX - 50, mouseY, 35);
 }
 
 
-function fish(){
+function fishDiamond(){
   fill("#dbfc05"); // Tail
   triangle(mouseX + 120, mouseY, mouseX + 160, mouseY + 30, mouseX + 160, mouseY - 30);
+
   fill("#eb09d4"); // Body
   quad(mouseX + 140, mouseY, mouseX + 50, mouseY - 50, mouseX, mouseY, mouseX + 50, mouseY + 20);
+
   fill("#dbfc05");
   triangle(mouseX + 55, mouseY - 15, mouseX + 85, mouseY - 5, mouseX + 70, mouseY - 20); // Fin
   triangle(mouseX + 50, mouseY + 20, mouseX + 50, mouseY - 50, mouseX, mouseY); // Face
+
   fill("#faf8f7"); // Eye White
   circle(mouseX + 35, mouseY - 10, 20);
+
   fill("#52024a"); // Pupil
   circle(mouseX + 35, mouseY - 10, 13);
+}
 
+function keyPressed(){
   if(keyIsPressed){
-    if(key === " "){
-
+    if(key === "f" && fishType === fishDiamond){
+      fishType = fishCircle
+    }
+    else if(key === "f" && fishType === fishCircle){
+      fishType = fishSquare
+    }
+    else if(key === "f" && fishType === fishSquare){
+      fishType = fishDiamond
     }
   }
+}
+
+function middleMouse(){
+  if(mouseIsPressed){
+    if(mouseButton === CENTER){
+     if(currentBack > 3){
+      currentBack = 0;
+      bgColour = "Red";
+    }
+    else if(currentBack === 0){
+      bgColour = "Red";
+    }
+    else if(currentBack === 1){
+      bgColour = "Yellow";
+    }
+    else if(currentBack === 2){
+      bgColour = "Orange";
+    }
+    else if(currentBack === 3){
+      bgColour = "Blue";
+    }
+    currentBack++;
+  }
+}
 }
 
 function draw() {
   oceanBG();
   artistMark();
-  fish();
-  fishCircle();
+  // fishDiamond();
+  // fishCircle();
+  // fishSquare();
+  fishType();
+  middleMouse();
  }
