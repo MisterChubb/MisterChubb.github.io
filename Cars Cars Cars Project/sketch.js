@@ -10,10 +10,13 @@ function setup() {
 
 
 function drawRoad(){
+  noStroke();
   fill("#1d1d2b");
   rect(0, windowHeight/4, windowWidth, windowHeight/2);
-  for (let i = 0; i <= windowWidth; i++){
-    
+
+  for (let i = 0; i <= windowWidth; i+=50){ // Dashed Line
+    fill("#fad902");
+    rect(i, windowHeight/2, 25, 3);
   }
 }
 
@@ -24,6 +27,6 @@ function drawRoad(){
 
 
 function draw() {
-  background("#1c2616");
+  background("#6b8f1d");
   drawRoad();
 }
