@@ -21,6 +21,9 @@ function drawRoad(){
 }
 
 
+class Vehicle{
+  
+}
 
 
 
