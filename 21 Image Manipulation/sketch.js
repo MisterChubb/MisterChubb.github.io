@@ -4,7 +4,7 @@
 // PART 1: Working with images and translation between 2D and 1D indices
 // PART 2: Using videos
 
-let myImage;
+let myVideo;
 
 function preload(){
   // Called BEFORE setup. Won't conclude until all loads are complete
@@ -12,19 +12,43 @@ function preload(){
 }
 
 function setup() {
-  createCanvas(myImage.width, myImage.height);
+  createCanvas(640, 480);
+  myVideo = createCapture(VIDEO);
   pixelDensity(1);
+  // myVideo.hide();
 }
 
 function draw() {
   background(220);
-  image(myImage, 0,0);
+  // image(myImage, 0,0);
+  image(myVideo, 0,0);
 
   // Access and modify pixels on canvas
   loadPixels(); // Dumps data from canvas to array
+  background(0);
   // boost();
-  greyscale();
-  updatePixels();
+  // greyscale();
+  // updatePixels();
+  textImage();
+}
+
+function textImage(){
+  fill(255);
+  let scaleAmount = 3;
+  textSize(scaleAmount);
+
+  for(let x = 0; x < width; x += scaleAmount){
+    for(let y = 0; y < height; y += scaleAmount){
+      let avg = getAvg(x,y); // 0 - 255
+      // if(avg > 170) text("T", x, y);
+      if(avg > 170) text("🌈", x, y);
+      else if(avg > 130) text("🌝", x, y);
+      else if(avg > 90) text("🌸", x, y);
+      else if(avg > 45) text(".", x, y);
+      else if(avg > 30) text("/", x, y);
+      fill("#c573ff");
+    }
+  }
 }
 
 function boost(){
@@ -46,6 +70,8 @@ function getAvg(x,y){
   let b = pixels[index + 2];
   return (r + g + b) / 3
 }
+
+
 
 function greyscale(){
   // Uses average intensity of each pixel to represent it as a shade of grey
