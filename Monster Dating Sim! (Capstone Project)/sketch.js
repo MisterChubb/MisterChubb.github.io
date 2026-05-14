@@ -16,15 +16,18 @@ function setup(){
   startB.locate(450, 650);
   startB.resize(500,200);
   startB.text = "";
+
+  function onPress(startB){
+    print("Awesome!");
+    background(random(255));
+  }
+  
   // startB.position(450, 750);
   // startB.size(500, 100);
   // startB.style("background-image", )
   // startB.mousePressed(loveInterestSurvey);
 }
 
-function gameMenu(){
-  
-}
 
 function loveInterestSurvey(){
   print("Hello!");
@@ -34,5 +37,4 @@ function loveInterestSurvey(){
 function draw(){
   background(220);
   startB.draw();
-  // gameMenu();
 }
