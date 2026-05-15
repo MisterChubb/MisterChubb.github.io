@@ -17,16 +17,22 @@ function setup(){
   startB.resize(500,200);
   startB.text = "";
 
-  function onPress(startB){
-    print("Awesome!");
-    background(random(255));
+  startB.onPress = function(){
+    print("PLEASE WORK PLEAAASSEEE");
+
   }
+
+  startB.onHover = function(){
+    this.color = "Lime";
+  }
+  }
+
   
   // startB.position(450, 750);
   // startB.size(500, 100);
   // startB.style("background-image", )
   // startB.mousePressed(loveInterestSurvey);
-}
+// }
 
 
 function loveInterestSurvey(){
@@ -35,6 +41,6 @@ function loveInterestSurvey(){
 }
 
 function draw(){
-  background(220);
+  // background(220);
   startB.draw();
 }
