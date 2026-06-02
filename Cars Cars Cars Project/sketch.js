@@ -82,8 +82,9 @@ class Vehicle{
     }
 
   speedDown(){
-    if(this.speed >= 0){
+    if(this.speed > 0){
       this.speed = random(this.speed - 1, 0);
+      this.speed = max(this.speed, 0);
     }
   }
 
