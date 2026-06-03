@@ -10,10 +10,10 @@ let eastBound = [];
 
 
 function setup() {
-  createCanvas(800, 600);
-  for(let i = 0; i < 20; i++){
-    westBound.push(new Vehicle(0, random(150, 275), 1));
-    eastBound.push(new Vehicle(width, random(300, 425), 0));
+  createCanvas(1500, 1000);
+  for(let i = 0; i < 5; i++){
+    westBound.push(new Vehicle(0, random(255, 470), 1));
+    eastBound.push(new Vehicle(width, random(535, 700), 0));
   }
 }
 
@@ -60,19 +60,59 @@ class Vehicle{
 
   display(){
     if(this.type === 0){ // Draws a car design
-      fill(this.color);
-      rect(this.x, this.y, 35, 20);
+      fill(this.color); 
+      rect(this.x, this.y, 75, 30, 5); // Body
 
-      // fill("black");
-      // rect(this.x, this.y - 15, 15, 15);
-      // rect(this.x, this.y + 50, 15, 15);
-      // rect(this.x + 60, this.y - 15, 15, 15);
-      // rect(this.x + 60, this.y + 50, 15, 15);
+      fill("black");
+      rect(this.x + 15, this.y + 5, 10, 20); // Windows
+      rect(this.x + 50, this.y + 5, 10, 20);
+
+      rect(this.x + 10, this.y - 5, 10, 5); // Wheels
+      rect(this.x + 10, this.y + 30, 10, 5);
+      rect(this.x + 55, this.y - 5, 10, 5);
+      rect(this.x + 55, this.y + 30, 10, 5);
+
+
+      fill("white"); // Lights
+      rect(this.x, this.y + 2, 3, 5);
+      rect(this.x, this.y + 22, 3, 5);
+      rect(this.x + 72, this.y + 22, 3, 5);
+      rect(this.x + 72, this.y + 2, 3, 5);
     }
-    else{ // Draws a truck design
-      fill(this.color);
-      rect(this.x, this.y, 35, 20);
-      
+    else if(this.type === 1 && this.dir === 0){ // Draws a truck design
+      fill(this.color); // Replace with this.color
+      rect(this.x, this.y, 110, 40, 10); // replace all 100's with this.x and this.y
+      fill("black");
+      rect(this.x + 72, this.y + 5, 15, 30); // Window
+      rect(this.x + 5, this.y + 4, 45, 32); // Truck bed
+
+      rect(this.x + 15, this.y - 5, 13, 5); // Wheels
+      rect(this.x + 15, this.y + 40, 13, 5);
+      rect(this.x + 65, this.y - 5, 13, 5);
+      rect(this.x + 65, this.y + 40, 13, 5);
+
+
+      fill("white");
+      rect(this.x + 107, this.y + 5, 3, 5);
+      rect(this.x + 107, this.y + 30, 3, 5);
+    }
+
+    else if(this.type === 1 && this.dir === 1){
+      fill(this.color); // Replace with this.color
+      rect(this.x, this.y, 110, 40, 10); // replace all 100's with this.x and this.y
+      fill("black");
+      rect(this.x + 23, this.y + 5, 15, 30); // Window
+      rect(this.x + 60, this.y + 4, 45, 32); // Truck bed
+
+      rect(this.x + 15, this.y - 5, 13, 5); // Wheels
+      rect(this.x + 15, this.y + 40, 13, 5);
+      rect(this.x + 65, this.y - 5, 13, 5);
+      rect(this.x + 65, this.y + 40, 13, 5);
+
+
+      fill("white");
+      rect(this.x, this.y + 5, 3, 5);
+      rect(this.x, this.y + 30, 3, 5);
     }
 
   }
