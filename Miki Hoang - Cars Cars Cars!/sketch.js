@@ -13,7 +13,7 @@ let light;
 
 function setup() {
   createCanvas(1500, 1000);
-  for(let i = 0; i < 1; i++){
+  for(let i = 0; i < 20; i++){
     westBound.push(new Vehicle(width, random(255, 450), 1)); // y-coordinates are set within lane boundaries
     eastBound.push(new Vehicle(0, random(535, 700), 0));
   }
