@@ -123,8 +123,8 @@ class Vehicle{
   }
 
   speedUp(){
-      this.speed = random(this.speed + 1, 15); // Will increase the speed of a vehicle by a random ammount between its original speed and 15
-    }
+    this.speed = random(this.speed + 1, 15); // Will increase the speed of a vehicle by a random ammount between its original speed and 15
+  }
 
   speedDown(){
     if(this.speed > 0){
@@ -181,8 +181,8 @@ class TrafficLight{
       }
       for(let n of eastBound){
         n.fullStop();
+      }
     }
-  }
 
     if(this.lightTimer === 0){ // Swicthes the light back to green after the timer has run out
       this.color = "lime";
@@ -191,7 +191,7 @@ class TrafficLight{
 
   switchColor(){ // If the light is green, it will become red and set the timer to 120
     if(this.color === "lime"){
-      this.color = "red"
+      this.color = "red";
       this.lightTimer = 120;
     }
   }
@@ -210,10 +210,10 @@ function mousePressed(){ // Shift-left-click adds new vehicles to the bottom lan
 }
 
 function keyPressed(){ // Switches the green light to red only when the spacebar is pressed
-    if(key === " "){
-      light.switchColor();
-    }
+  if(key === " "){
+    light.switchColor();
   }
+}
 
 function draw() {
   background("#6b8f1d");
@@ -223,7 +223,7 @@ function draw() {
     n.action();
   }
 
-   for(let n of eastBound){
+  for(let n of eastBound){
     n.action();
   }
   
