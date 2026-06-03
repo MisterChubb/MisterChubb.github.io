@@ -6,15 +6,18 @@
 // ---------------- GLOBAL VARIABLES ----------------
 let westBound = [];
 let eastBound = [];
+let light;
 // --------------------------------------------------
 
 
 function setup() {
   createCanvas(1500, 1000);
-  for(let i = 0; i < 5; i++){
-    westBound.push(new Vehicle(0, random(255, 470), 1));
+  for(let i = 0; i < 20; i++){
+    westBound.push(new Vehicle(0, random(255, 450), 1));
     eastBound.push(new Vehicle(width, random(535, 700), 0));
   }
+  
+  light = new TrafficLight();
 }
 
 
@@ -128,6 +131,10 @@ class Vehicle{
     }
   }
 
+  fullStop(){
+    this.speed = 0;
+  }
+
   changeColor(){
     this.color = color(random(255), random(255), random(255));
   }
@@ -151,14 +158,63 @@ class Vehicle{
   }
 }
 
+class TrafficLight{
+  constructor(){
+    this.color = "lime";
+    this.lightTimer = 0;
+  }
 
+  display(){
+    fill(this.color);
+    circle(width/2, 100, 100);
+  }
 
+  updateTimer(){
+    if(this.color === "red"){
+      this.lightTimer--;
+      for(let n of westBound){
+        n.fullStop();
+      }
+      for(let n of eastBound){
+        n.fullStop();
+    }
+  }
 
+    if(this.lightTimer === 0){
+      this.color = "lime";
+    }
+  }
+
+  switchColor(){
+    if(this.color === "lime"){
+      this.color = "red"
+      this.lightTimer = 120;
+    }
+  }
+
+}
+
+function mousePressed(){
+  if(mouseIsPressed){
+    if(mouseButton === LEFT && keyIsDown(SHIFT)){
+      eastBound.push(new Vehicle(width, random(535, 700), 0));
+    }
+    else if(mouseButton === LEFT){
+      westBound.push(new Vehicle(0, random(255, 470), 1));
+    }
+  }
+}
+
+function keyPressed(){
+    if(key === " "){
+      light.switchColor();
+    }
+  }
 
 function draw() {
   background("#6b8f1d");
   drawRoad();
-
+  
   for(let n of westBound){
     n.action();
   }
@@ -166,4 +222,8 @@ function draw() {
    for(let n of eastBound){
     n.action();
   }
+  
+  light.updateTimer();
+  light.display();
+  
 }
