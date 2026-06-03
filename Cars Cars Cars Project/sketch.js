@@ -1,7 +1,8 @@
 // Cars Cars Cars!
 // Miki Hoang
 // April 1, 2026
-// (INSERT EPIC DESCRIPTION HERE)
+// Woah! Rush hour is absolutely insane today! This interactive program simulates a chaotic traffic scene. Additional cars can be added and the traffic light in the top left corner can be controlled.
+// The power is in your hands! Hopefully everyone will still make it to work on time...
 
 // ---------------- GLOBAL VARIABLES ----------------
 let westBound = [];
@@ -12,11 +13,10 @@ let light;
 
 function setup() {
   createCanvas(1500, 1000);
-  for(let i = 0; i < 20; i++){
-    westBound.push(new Vehicle(0, random(255, 450), 1));
-    eastBound.push(new Vehicle(width, random(535, 700), 0));
+  for(let i = 0; i < 1; i++){
+    westBound.push(new Vehicle(width, random(255, 450), 1)); // y-coordinates are set within lane boundaries
+    eastBound.push(new Vehicle(0, random(535, 700), 0));
   }
-  
   light = new TrafficLight();
 }
 
@@ -26,7 +26,7 @@ function drawRoad(){
   fill("#312d3d");
   rect(0, height/4, width, height/2);
 
-  for (let i = 0; i <= width; i+=70){ // Dashed Line
+  for (let i = 0; i <= width; i+=70){ // Draws a dashed line
     fill("#fad902");
     rect(i, height/2, 35, 5);
   }
@@ -45,24 +45,24 @@ class Vehicle{
   }
 
   move(){
-    if(this.dir === 0){ // East
+    if(this.dir === 0){
       this.x += this.speed;
     }
     else{
       this.x -= this.speed;
     }
 
-    if(this.x > width + 35){
+    if(this.x > width + 300){
       this.x = 0;
     }
 
-    if(this.x < -35){
+    if(this.x < -300){
       this.x = width;
     }
   }
 
   display(){
-    if(this.type === 0){ // Draws a car design
+    if(this.type === 0){ // DRAWS A CAR DESIGN
       fill(this.color); 
       rect(this.x, this.y, 75, 30, 5); // Body
 
@@ -82,9 +82,10 @@ class Vehicle{
       rect(this.x + 72, this.y + 22, 3, 5);
       rect(this.x + 72, this.y + 2, 3, 5);
     }
-    else if(this.type === 1 && this.dir === 0){ // Draws a truck design
-      fill(this.color); // Replace with this.color
-      rect(this.x, this.y, 110, 40, 10); // replace all 100's with this.x and this.y
+    else if(this.type === 1 && this.dir === 0){ // DRAWS A TRUCK DESIGN
+      // ---------------- EAST-FACING TRUCK ------------------
+      fill(this.color);
+      rect(this.x, this.y, 110, 40, 10); // Body
       fill("black");
       rect(this.x + 72, this.y + 5, 15, 30); // Window
       rect(this.x + 5, this.y + 4, 45, 32); // Truck bed
@@ -95,14 +96,15 @@ class Vehicle{
       rect(this.x + 65, this.y + 40, 13, 5);
 
 
-      fill("white");
+      fill("white"); // Lights
       rect(this.x + 107, this.y + 5, 3, 5);
       rect(this.x + 107, this.y + 30, 3, 5);
     }
-
+     
     else if(this.type === 1 && this.dir === 1){
-      fill(this.color); // Replace with this.color
-      rect(this.x, this.y, 110, 40, 10); // replace all 100's with this.x and this.y
+      // ------------------- WEST-FACING TRUCK ------------------
+      fill(this.color);
+      rect(this.x, this.y, 110, 40, 10); // Body
       fill("black");
       rect(this.x + 23, this.y + 5, 15, 30); // Window
       rect(this.x + 60, this.y + 4, 45, 32); // Truck bed
@@ -113,7 +115,7 @@ class Vehicle{
       rect(this.x + 65, this.y + 40, 13, 5);
 
 
-      fill("white");
+      fill("white"); // Lights
       rect(this.x, this.y + 5, 3, 5);
       rect(this.x, this.y + 30, 3, 5);
     }
@@ -121,13 +123,13 @@ class Vehicle{
   }
 
   speedUp(){
-      this.speed = random(this.speed + 1, 15);
+      this.speed = random(this.speed + 1, 15); // Will increase the speed of a vehicle by a random ammount between its original speed and 15
     }
 
   speedDown(){
     if(this.speed > 0){
-      this.speed = random(this.speed - 1, 0);
-      this.speed = max(this.speed, 0);
+      this.speed = random(this.speed - 1, 0); // Will decrease the speed of a vehicle by a random ammount between 0 and its original speed
+      this.speed = max(this.speed, 0); // Prevents the speed of a vehicle from dropping below 0 and moving backwards
     }
   }
 
@@ -165,11 +167,13 @@ class TrafficLight{
   }
 
   display(){
+    fill("#fad902");
+    square(45, 45, 110, 10);
     fill(this.color);
-    circle(width/2, 100, 100);
+    circle(100, 100, 80);
   }
 
-  updateTimer(){
+  updateTimer(){ // Starts decreasing the timer and stops all traffic only when the light has switched to red
     if(this.color === "red"){
       this.lightTimer--;
       for(let n of westBound){
@@ -180,12 +184,12 @@ class TrafficLight{
     }
   }
 
-    if(this.lightTimer === 0){
+    if(this.lightTimer === 0){ // Swicthes the light back to green after the timer has run out
       this.color = "lime";
     }
   }
 
-  switchColor(){
+  switchColor(){ // If the light is green, it will become red and set the timer to 120
     if(this.color === "lime"){
       this.color = "red"
       this.lightTimer = 120;
@@ -194,18 +198,18 @@ class TrafficLight{
 
 }
 
-function mousePressed(){
+function mousePressed(){ // Shift-left-click adds new vehicles to the bottom lane, while a single left click adds new vehicles to the top lane
   if(mouseIsPressed){
     if(mouseButton === LEFT && keyIsDown(SHIFT)){
-      eastBound.push(new Vehicle(width, random(535, 700), 0));
+      eastBound.push(new Vehicle(0, random(535, 700), 0));
     }
     else if(mouseButton === LEFT){
-      westBound.push(new Vehicle(0, random(255, 470), 1));
+      westBound.push(new Vehicle(width, random(255, 450), 1));
     }
   }
 }
 
-function keyPressed(){
+function keyPressed(){ // Switches the green light to red only when the spacebar is pressed
     if(key === " "){
       light.switchColor();
     }
@@ -215,7 +219,7 @@ function draw() {
   background("#6b8f1d");
   drawRoad();
   
-  for(let n of westBound){
+  for(let n of westBound){ // Goes through every vehicle in the array and applies the .action method to each
     n.action();
   }
 
