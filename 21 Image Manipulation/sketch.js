@@ -13,23 +13,23 @@ function preload(){
 
 function setup() {
   createCanvas(640, 480);
-  myVideo = createCapture(VIDEO);
+  // myVideo = createCapture(VIDEO);
   pixelDensity(1);
   // myVideo.hide();
 }
 
 function draw() {
   background(220);
-  // image(myImage, 0,0);
-  image(myVideo, 0,0);
+  image(myImage, 0,0);
+  // image(myVideo, 0,0);
 
   // Access and modify pixels on canvas
   loadPixels(); // Dumps data from canvas to array
   background(0);
   // boost();
-  // greyscale();
-  // updatePixels();
-  textImage();
+  greyscale();
+  updatePixels();
+  // textImage();
 }
 
 function textImage(){
