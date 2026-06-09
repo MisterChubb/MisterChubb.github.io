@@ -36,7 +36,7 @@ function mousePressed(){
   let y = getCurrentY();
 
   //only do a flip if mouse is on the Canvas
-  if(mouseX < width && mouseY < height && keyIsDown(SHIFT)){
+  if(mouseX < width && mouseY < height && keyIsDown(SHIFT)){ // Flips a single tile
     flip(x, y);
   }
   else if(mouseX < width && mouseY < height){
@@ -90,7 +90,11 @@ function getCurrentY(){
 }
 
 function checkWin(){
- 
+  for(let y = 0; y < rows; y++){ //y:0 1 2 3 4
+    for(let x = 0; x < cols; x++){ //x: 0 1 2 3 4 5
+
+    }
+  }
 }
 
 function draw() {
