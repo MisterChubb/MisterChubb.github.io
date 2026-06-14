@@ -11,7 +11,6 @@ let painting2;
 let paintingState = 0;
 let roach;
 let roach2;
-// let roachState = 0;
 let spawnRoaches = [];
 
 let mirror = [];
@@ -32,7 +31,7 @@ async function setup() {
   roach = await loadImage("Assets/Roach_Puzzle/roach.PNG");
   roach2 = await loadImage("Assets/Roach_Puzzle/roach2.PNG");
 
-  for(let i = 1; i < 5; i ++){ 
+  for(let i = 0; i < 9; i ++){ 
     spawnRoaches.push(new Roaches());
   }
 
@@ -66,7 +65,7 @@ function roachPuzzle(){
   if(paintingState === 0){
     image(painting, 0, 0);
   }
-  if(mouseIsPressed){
+  if(mouseIsPressed && mouseX >= 150 && mouseX <= 850 && mouseY >= 75 && mouseY <= 900){
     paintingState = 1;
   }
   if(paintingState === 1){
@@ -108,12 +107,12 @@ class FloatText{
 
 class Roaches{
   constructor(){
-    this.x = random(1000);
-    this.y = random(1000);
+    this.x = random(350, 550);
+    this.y = 400;
     this.sizeW = 100;
     this.sizeH = 100;
-    this.speedX = random(-3, 3); 
-    this.speedY = random(-3, 3);
+    this.speedX = random(-7, 7); 
+    this.speedY = random(-7, 7);
     this.state = 0;
   }
   display(){
@@ -121,8 +120,9 @@ class Roaches{
       if(this.state === 0){
         image(roach, this.x, this.y, this.sizeW, this.sizeH);
       }
-      if(mouseIsPressed && mouseX === this.x && mouseY === this.y){
+      if(mouseIsPressed && mouseX >= this.x && mouseX <= this.x + this.sizeW + 7 && mouseY >= this.y && mouseY <= this.y + this.sizeH + 7){
         this.switchState();
+        this.stop();
       }
       if(this.state === 1){
         image(roach2, this.x, this.y, this.sizeW, this.sizeH);
@@ -140,6 +140,10 @@ class Roaches{
   }
   switchState(){
       this.state = 1;
+  }
+  stop(){
+    this.speedX = 0;
+    this.speedY = 0;
   }
 }
 
