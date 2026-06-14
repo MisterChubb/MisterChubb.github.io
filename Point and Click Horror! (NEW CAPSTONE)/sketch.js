@@ -5,18 +5,39 @@
 
 // ----------------------- GLOBAL VARIABLES --------------------------
 let handCursor;
+let pixelFont;
 
+// MIRROR SCENE VARIABLES
+let mirror = [];
+let mirrorIndex = 0;
+let mirrorText = [];
+
+// PAINTING & ROACH PUZZLE VARIABLES
 let painting;
 let painting2;
-let paintingState = 0;
+let paintingState = 0; // 0: Mr. Scott Portrait (painting)    1: Hole with roaches (painting2)
 let roach;
 let roach2;
 let spawnRoaches = [];
 
-let mirror = [];
-let mirrorIndex = 0;
-let mirrorText = [];
-let pixelFont;
+let grid = [
+  [255, 0, 0, 0, 0, 255],
+  [255, 255, 255, 255, 0, 255],
+  [255, 255, 255, 0, 255, 255],
+  [255, 255, 0, 255, 255, 255],
+  [255, 0, 255, 255, 255, 255]
+];
+
+let overlayGrid = [
+  [255, 255, 255, 255, 255, 255],
+  [255, 255, 255, 255, 255, 255],
+  [255, 255, 255, 255, 255, 255],
+  [255, 255, 255, 255, 255, 255],
+  [255, 255, 255, 255, 255, 255]
+];
+let rows = overlayGrid.length;
+let cols = overlayGrid[0].length;
+let tileSize = 75;
 // -------------------------------------------------------------------
 async function setup() {
   createCanvas(1000, 1000);
@@ -31,70 +52,105 @@ async function setup() {
   roach = await loadImage("Assets/Roach_Puzzle/roach.PNG");
   roach2 = await loadImage("Assets/Roach_Puzzle/roach2.PNG");
 
-  for(let i = 0; i < 9; i ++){ 
+  for (let i = 0; i < 9; i++) {
     spawnRoaches.push(new Roaches());
   }
 
 
-  for(let i = 1; i < 5; i ++){ // Load mirror scene animation images
+  for (let i = 1; i < 5; i++) { // Load mirror scene animation images
     mirror.push(await loadImage("Assets/Mirror_Scene/Mirror" + i + ".PNG"));
   }
 
-  for(let i = 0; i < 5; i++){
+  for (let i = 0; i < 5; i++) {
     mirrorText.push(new FloatText());
   }
 }
 
 
-function mirrorScene(){
+function mirrorScene() {
   image(mirror[mirrorIndex], 0, 0);
-  if(frameCount % 12 === 0){
+  if (frameCount % 12 === 0) {
     mirrorIndex += 1;
-    if(mirrorIndex > 3){
+    if (mirrorIndex > 3) {
       mirrorIndex = 0;
     }
   }
 
-  for(let t of mirrorText){
+  for (let t of mirrorText) {
     t.display();
     t.move();
   }
 }
 
-function roachPuzzle(){
-  if(paintingState === 0){
+function roachPuzzle() {
+  if (paintingState === 0) {
     image(painting, 0, 0);
   }
-  if(mouseIsPressed && mouseX >= 150 && mouseX <= 850 && mouseY >= 75 && mouseY <= 900){
+  if (mouseIsPressed && mouseX >= 150 && mouseX <= 850 && mouseY >= 75 && mouseY <= 900) {
     paintingState = 1;
   }
-  if(paintingState === 1){
+  if (paintingState === 1) {
     image(painting2, 0, 0);
   }
 
-  for(let r of spawnRoaches){
+  for (let r of spawnRoaches) {
     r.display();
     r.move();
   }
 }
 
+function windowPuzzle() {
+  let x = getCurrentX();
+  let y = getCurrentY();
 
-class FloatText{
-  constructor(){
+  if (mouseIsPressed) {
+    if (grid[y][x] === 0) {
+      overlayGrid[y][x] = 0;
+    }
+    else if (grid[y][x] === 255) {
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          overlayGrid[y][x] = 255;
+        }
+      }
+    }
+  }
+
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      let fillColor = overlayGrid[y][x];
+      fill(fillColor);
+      square(550 + (x * tileSize), y * tileSize, tileSize);
+    }
+  }
+}
+
+function getCurrentX() { // Determines the current column position of the mouse
+  let constrainedX = constrain(mouseX - 550, 0, width - 1);
+  return floor(constrainedX / tileSize);
+}
+
+function getCurrentY() { // Determines the current row position of the mouse
+  let constrainedY = constrain(mouseY, 0, height - 1);
+  return floor(constrainedY / tileSize);
+}
+
+class FloatText {
+  constructor() {
     this.x = random(1000);
     this.y = random(1000);
     this.size = random(25, 100);
-    this.speedX = random(-5, 5); 
-    this.speedY = random(-5, 5);    
+    this.speedX = random(-5, 5);
+    this.speedY = random(-5, 5);
   }
 
-  display(){
+  display() {
     fill(255);
     textFont(pixelFont);
     textSize(this.size);
     text("Who am I?", this.x, this.y);
   }
-  move(){
+  move() {
     this.x += this.speedX;
     this.y += this.speedY;
 
@@ -105,43 +161,43 @@ class FloatText{
   }
 }
 
-class Roaches{
-  constructor(){
-    this.x = random(350, 550);
-    this.y = 400;
+class Roaches {
+  constructor() {
+    this.x = 500;
+    this.y = 500;
     this.sizeW = 100;
     this.sizeH = 100;
-    this.speedX = random(-7, 7); 
+    this.speedX = random(-7, 7);
     this.speedY = random(-7, 7);
     this.state = 0;
   }
-  display(){
-    if(paintingState === 1){
-      if(this.state === 0){
+  display() {
+    if (paintingState === 1) {
+      if (this.state === 0) {
         image(roach, this.x, this.y, this.sizeW, this.sizeH);
       }
-      if(mouseIsPressed && mouseX >= this.x && mouseX <= this.x + this.sizeW + 7 && mouseY >= this.y && mouseY <= this.y + this.sizeH + 7){
+      if (mouseIsPressed && mouseX >= this.x && mouseX <= this.x + this.sizeW + 3 && mouseY >= this.y && mouseY <= this.y + this.sizeH + 3) {
         this.switchState();
         this.stop();
       }
-      if(this.state === 1){
+      if (this.state === 1) {
         image(roach2, this.x, this.y, this.sizeW, this.sizeH);
       }
     }
   }
-  move(){
+  move() {
     this.x += this.speedX;
     this.y += this.speedY;
 
-    if (this.x > width) this.x = 0;
-    if (this.x < 0) this.x = width;
-    if (this.y > height) this.y = 0;
-    if (this.y < 0) this.y = height;
+    if (this.x > width + 100) this.x = 0;
+    if (this.x < 0 - 100) this.x = width;
+    if (this.y > height + 100) this.y = 0;
+    if (this.y < 0 - 100) this.y = height;
   }
-  switchState(){
-      this.state = 1;
+  switchState() {
+    this.state = 1;
   }
-  stop(){
+  stop() {
     this.speedX = 0;
     this.speedY = 0;
   }
@@ -151,5 +207,6 @@ function draw() {
   background(0);
   // mirrorScene();
   roachPuzzle();
+  // windowPuzzle();
   image(handCursor, mouseX, mouseY, 100, 100);
 }
