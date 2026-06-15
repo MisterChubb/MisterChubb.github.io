@@ -41,13 +41,14 @@ let overlayGrid = [
 let rows = overlayGrid.length;
 let cols = overlayGrid[0].length;
 let tileSize = 50;
+let faceLayer;
 // -------------------------------------------------------------------
 async function setup() {
   createCanvas(1000, 1000);
   noCursor();
   pixelFont = await loadFont("Assets/Fonts/pixel2.ttf"); // Load new font
   handCursor = await loadImage("Assets/cursor.PNG");
-
+  faceLayer = createGraphics(width, height);
 
 
   painting = await loadImage("Assets/Roach_Puzzle/painting.PNG");
@@ -55,9 +56,7 @@ async function setup() {
   roach = await loadImage("Assets/Roach_Puzzle/roach.PNG");
   roach2 = await loadImage("Assets/Roach_Puzzle/roach2.PNG");
 
-  for (let i = 0; i < 9; i++) {
-    spawnRoaches.push(new Roaches());
-  }
+
 
 
   for (let i = 1; i < 5; i++) { // Load mirror scene animation images
@@ -88,14 +87,24 @@ function mirrorScene() {
     t.display();
     t.move();
   }
+  if (mouseIsPressed) {
+    stroke(255);
+    strokeWeight(30);
+    faceLayer.line(mouseX, mouseY, pmouseX, pmouseY);
+  }
+  image(faceLayer, 0, 0);
+  strokeWeight(1);
 }
 
 function roachPuzzle() {
   if (paintingState === 0) {
     image(painting, 0, 0);
   }
-  if (mouseIsPressed && mouseX >= 150 && mouseX <= 850 && mouseY >= 75 && mouseY <= 900) {
+  if (mouseIsPressed && paintingState === 0 && mouseX >= 150 && mouseX <= 850 && mouseY >= 75 && mouseY <= 900) {
     paintingState = 1;
+    for (let i = 0; i < 9; i++) {
+      spawnRoaches.push(new Roaches());
+    }
   }
   if (paintingState === 1) {
     image(painting2, 0, 0);
@@ -107,7 +116,19 @@ function roachPuzzle() {
   }
 }
 
+
+
+
+function inWindow(){
+ if(mouseX > 517 && mouseX < 816 && mouseY > 185 && mouseY < 426 ){
+  return true;
+ }
+ else{
+  return false;
+ }
+}
 function windowScene() {
+  
   if (windowState === 0) {
     image(windowClosed, 0, 0);
   }
@@ -129,7 +150,7 @@ function windowScene() {
 function windowPuzzle() {
   let x = getCurrentX();
   let y = getCurrentY();
-
+// print(x,y);
   // RENDER GRID
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
@@ -139,7 +160,7 @@ function windowPuzzle() {
     }
   }
   // FLIP TILES
-  if (mouseIsPressed && windowState === 1) {
+  if (mouseIsPressed && inWindow() && windowState === 1) {
     if (grid[y][x] === 0) {
       overlayGrid[y][x] = 0;
     }
@@ -249,7 +270,7 @@ class Roaches {
 
 function draw() {
   background(0);
-  // mirrorScene();
+  mirrorScene();
   // roachPuzzle();
   // windowScene();
   image(handCursor, mouseX, mouseY, 100, 100);
