@@ -20,6 +20,10 @@ let roach;
 let roach2;
 let spawnRoaches = [];
 
+let windowClosed;
+let windowState = 0;
+let windowAni = [];
+let windowIndex = 0;
 let grid = [
   [255, 0, 0, 0, 0, 255],
   [255, 255, 255, 255, 0, 255],
@@ -27,7 +31,6 @@ let grid = [
   [255, 255, 0, 255, 255, 255],
   [255, 0, 255, 255, 255, 255]
 ];
-
 let overlayGrid = [
   [255, 255, 255, 255, 255, 255],
   [255, 255, 255, 255, 255, 255],
@@ -37,7 +40,7 @@ let overlayGrid = [
 ];
 let rows = overlayGrid.length;
 let cols = overlayGrid[0].length;
-let tileSize = 75;
+let tileSize = 50;
 // -------------------------------------------------------------------
 async function setup() {
   createCanvas(1000, 1000);
@@ -63,6 +66,11 @@ async function setup() {
 
   for (let i = 0; i < 5; i++) {
     mirrorText.push(new FloatText());
+  }
+
+  windowClosed = await loadImage("Assets/Window_Puzzle/window.PNG");
+  for (let i = 2; i < 5; i++) {
+    windowAni.push(await loadImage("Assets/Window_Puzzle/window" + i + ".PNG"));
   }
 }
 
@@ -99,11 +107,39 @@ function roachPuzzle() {
   }
 }
 
+function windowScene() {
+  if (windowState === 0) {
+    image(windowClosed, 0, 0);
+  }
+  if (mouseIsPressed) {
+    windowState = 1;
+  }
+  if (windowState === 1) {
+    image(windowAni[windowIndex], 0, 0);
+    if (frameCount % 25 === 0) {
+      windowIndex += 1;
+      if (windowIndex > 2) {
+        windowIndex = 0;
+      }
+    }
+    windowPuzzle();
+  }
+}
+
 function windowPuzzle() {
   let x = getCurrentX();
   let y = getCurrentY();
 
-  if (mouseIsPressed) {
+  // RENDER GRID
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      let fillColor = overlayGrid[y][x];
+      fill(fillColor);
+      square(530 + (x * tileSize), 185 + (y * tileSize), tileSize);
+    }
+  }
+  // FLIP TILES
+  if (mouseIsPressed && windowState === 1) {
     if (grid[y][x] === 0) {
       overlayGrid[y][x] = 0;
     }
@@ -115,23 +151,15 @@ function windowPuzzle() {
       }
     }
   }
-
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      let fillColor = overlayGrid[y][x];
-      fill(fillColor);
-      square(550 + (x * tileSize), y * tileSize, tileSize);
-    }
-  }
 }
 
 function getCurrentX() { // Determines the current column position of the mouse
-  let constrainedX = constrain(mouseX - 550, 0, width - 1);
+  let constrainedX = constrain(mouseX - 530, 0, width - 1);
   return floor(constrainedX / tileSize);
 }
 
 function getCurrentY() { // Determines the current row position of the mouse
-  let constrainedY = constrain(mouseY, 0, height - 1);
+  let constrainedY = constrain(mouseY - 185, 0, height - 1);
   return floor(constrainedY / tileSize);
 }
 
@@ -154,10 +182,18 @@ class FloatText {
     this.x += this.speedX;
     this.y += this.speedY;
 
-    if (this.x > width) this.x = 0;
-    if (this.x < 0) this.x = width;
-    if (this.y > height) this.y = 0;
-    if (this.y < 0) this.y = height;
+    if (this.x > width) {
+      this.x = 0;
+    }
+    if (this.x < 0) {
+      this.x = width;
+    }
+    if (this.y > height) {
+      this.y = 0;
+    }
+    if (this.y < 0) {
+      this.y = height;
+    }
   }
 }
 
@@ -189,10 +225,18 @@ class Roaches {
     this.x += this.speedX;
     this.y += this.speedY;
 
-    if (this.x > width + 100) this.x = 0;
-    if (this.x < 0 - 100) this.x = width;
-    if (this.y > height + 100) this.y = 0;
-    if (this.y < 0 - 100) this.y = height;
+    if (this.x > width + 100) {
+      this.x = 0;
+    }
+    if (this.x < 0 - 100) {
+      this.x = width;
+    }
+    if (this.y > height + 100) {
+      this.y = 0;
+    }
+    if (this.y < 0 - 100) {
+      this.y = height;
+    }
   }
   switchState() {
     this.state = 1;
@@ -206,7 +250,7 @@ class Roaches {
 function draw() {
   background(0);
   // mirrorScene();
-  roachPuzzle();
-  // windowPuzzle();
+  // roachPuzzle();
+  // windowScene();
   image(handCursor, mouseX, mouseY, 100, 100);
 }
