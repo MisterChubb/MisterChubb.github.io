@@ -49,15 +49,24 @@ let radioCode = [];
 let radioState = 0;
 let hasKey = false;
 
+let door;
+let door2;
+let doorState = 0;
+
 let fullBathroom;
-let scene = "radio"; // 
+let scene = "bathroom"; //
+
+let backButton;
+let doorButton;
 // -------------------------------------------------------------------
 async function setup() {
   createCanvas(1000, 1000);
-  // noCursor();
+  noCursor();
   pixelFont = await loadFont("Assets/Fonts/pixel2.ttf"); // Load new font
   handCursor = await loadImage("Assets/cursor.PNG");
   keyCursor = await loadImage("Assets/key.PNG");
+  backButton = await loadImage("Assets/back.png");
+  doorButton = await loadImage("Assets/doorButton.png");
   faceLayer = createGraphics(width, height);
 
 
@@ -65,6 +74,10 @@ async function setup() {
   painting2 = await loadImage("Assets/Roach_Puzzle/painting2.PNG");
   roach = await loadImage("Assets/Roach_Puzzle/roach.PNG");
   roach2 = await loadImage("Assets/Roach_Puzzle/roach2.PNG");
+
+  door = await loadImage("Assets/Door_Scene/door.PNG");
+  door2 = await loadImage("Assets/Door_Scene/door2.PNG");
+
 
   bathroom = await loadImage("Assets/bathroom.PNG");
 
@@ -111,7 +124,7 @@ function mirrorScene() {
 }
 
 function roachPuzzle() {
-  if (paintingState === 0) {
+  if (paintingState === 0 && scene === "painting") {
     image(painting, 0, 0);
   }
   if (mouseIsPressed && paintingState === 0 && mouseX >= 150 && mouseX <= 850 && mouseY >= 75 && mouseY <= 900) {
@@ -128,10 +141,8 @@ function roachPuzzle() {
     r.display();
     r.move();
   }
+  back();
 }
-
-
-
 
 function inWindow() {
   if (mouseX > 517 && mouseX < 816 && mouseY > 185 && mouseY < 426) {
@@ -158,6 +169,7 @@ function windowScene() {
     }
     windowPuzzle();
   }
+  back();
 }
 
 function windowPuzzle() {
@@ -221,12 +233,48 @@ function radioPuzzle() {
   if (radioState === 3) {
     image(radioImages[3], 0, 0);
   }
+  back();
+}
+
+function doorScene() {
+  if (doorState === 0) {
+    image(door, 0, 0);
+  }
+  if (mouseIsPressed && mouseX > 240 && mouseX < 750 && mouseY > 50 && mouseY < 760 && hasKey === true) {
+    doorState = 1;
+  }
+  else if (mouseIsPressed && mouseX > 240 && mouseX < 750 && mouseY > 50 && mouseY < 760 && hasKey === false) {
+    text("Dang I need a key.", 500, 800);
+  }
+  if (doorState === 1) {
+    image(door2, 0, 0);
+  }
+  back();
+}
+
+function masterScene() {
+  if (scene === "bathroom") {
+    image(bathroom, 0, 0)
+    doorClickable();
+  }
+
+  if (scene === "window") {
+    windowScene();
+  }
+  else if (scene === "painting") {
+    roachPuzzle();
+  }
+  else if (scene === "radio") {
+    radioPuzzle();
+  }
+  else if (scene === "door") {
+    doorScene();
+  }
 }
 
 function mousePressed() {
   if (scene === "radio") {
     if (mouseX > 560 && mouseX < 610 && mouseY > 625 && mouseY < 675) {
-      print("THIS WORKS!");
       if (radioCode.length > 1) {
         radioCode.length = 0;
       }
@@ -235,7 +283,6 @@ function mousePressed() {
       }
     }
     if (mouseX > 740 && mouseX < 795 && mouseY > 625 && mouseY < 675) {
-      print("THIS WORKS TOO!");
       if (radioCode.length > 1) {
         radioCode.length = 0;
       }
@@ -246,132 +293,137 @@ function mousePressed() {
   }
 }
 
-
-function masterScene() {
+function mouseReleased() {
   if (scene === "bathroom") {
-    image(bathroom, 0, 0)
-  }
-  if (mouseIsPressed && mouseX > 30 && mouseX < 333 && mouseY > 50 && mouseY < 400) {
-    scene = "window";
-  }
-  else if (mouseIsPressed && mouseX > 750 && mouseX < 970 && mouseY > 50 && mouseY < 300) {
-    scene = "painting";
-  }
-
-
-  if (scene === "window") {
-    windowScene();
-  }
-  else if (scene === "painting") {
-    roachPuzzle();
-  }
-}
-
-// function cursorType(){
-//   if(hasKey === false){
-
-//   }
-// }
-
-class FloatText {
-  constructor() {
-    this.x = random(1000);
-    this.y = random(1000);
-    this.size = random(25, 100);
-    this.speedX = random(-5, 5);
-    this.speedY = random(-5, 5);
-  }
-
-  display() {
-    fill(255);
-    textFont(pixelFont);
-    textSize(this.size);
-    text("Who am I?", this.x, this.y);
-  }
-  move() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-
-    if (this.x > width) {
-      this.x = 0;
+    if (mouseX > 30 && mouseX < 333 && mouseY > 50 && mouseY < 400) {
+      scene = "window";
     }
-    if (this.x < 0) {
-      this.x = width;
+    else if (mouseX > 750 && mouseX < 970 && mouseY > 50 && mouseY < 300) {
+      scene = "painting";
     }
-    if (this.y > height) {
-      this.y = 0;
+    else if (mouseX > 120 && mouseX < 250 && mouseY > 520 && mouseY < 620) {
+      scene = "radio";
     }
-    if (this.y < 0) {
-      this.y = height;
+    else if (mouseX > 900 && mouseX < 980 && mouseY > 900 && mouseY < 980) {
+      scene = "door";
+    }
+  }
+  else if (scene === "window" || scene === "painting" || scene === "radio" || scene === "door") {
+    if (mouseX > 840 && mouseX < 970 && mouseY > 920 && mouseY < 970) {
+      scene = "bathroom";
     }
   }
 }
 
-class Roaches {
-  constructor() {
-    this.x = 500;
-    this.y = 500;
-    this.sizeW = 100;
-    this.sizeH = 100;
-    this.speedX = random(-7, 7);
-    this.speedY = random(-7, 7);
-    this.state = 0;
+  function back() {
+    image(backButton, 854, 930, 130, 50);
   }
-  display() {
-    if (paintingState === 1) {
-      if (this.state === 0) {
-        image(roach, this.x, this.y, this.sizeW, this.sizeH);
+
+  function doorClickable() {
+    image(doorButton, 900, 900, 80, 80);
+  }
+
+  class FloatText {
+    constructor() {
+      this.x = random(1000);
+      this.y = random(1000);
+      this.size = random(25, 100);
+      this.speedX = random(-5, 5);
+      this.speedY = random(-5, 5);
+    }
+
+    display() {
+      fill(255);
+      textFont(pixelFont);
+      textSize(this.size);
+      text("Who am I?", this.x, this.y);
+    }
+    move() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+
+      if (this.x > width) {
+        this.x = 0;
       }
-      if (mouseIsPressed && mouseX >= this.x && mouseX <= this.x + this.sizeW + 3 && mouseY >= this.y && mouseY <= this.y + this.sizeH + 3) {
-        this.switchState();
-        this.stop();
+      if (this.x < 0) {
+        this.x = width;
       }
-      if (this.state === 1) {
-        image(roach2, this.x, this.y, this.sizeW, this.sizeH);
+      if (this.y > height) {
+        this.y = 0;
+      }
+      if (this.y < 0) {
+        this.y = height;
       }
     }
   }
-  move() {
-    this.x += this.speedX;
-    this.y += this.speedY;
 
-    if (this.x > width + 100) {
-      this.x = 0;
+  class Roaches {
+    constructor() {
+      this.x = 500;
+      this.y = 500;
+      this.sizeW = 100;
+      this.sizeH = 100;
+      this.speedX = random(-7, 7);
+      this.speedY = random(-7, 7);
+      this.state = 0;
     }
-    if (this.x < 0 - 100) {
-      this.x = width;
+    display() {
+      if (paintingState === 1) {
+        if (this.state === 0) {
+          image(roach, this.x, this.y, this.sizeW, this.sizeH);
+        }
+        if (mouseIsPressed && mouseX >= this.x && mouseX <= this.x + this.sizeW + 3 && mouseY >= this.y && mouseY <= this.y + this.sizeH + 3) {
+          this.switchState();
+          this.stop();
+        }
+        if (this.state === 1) {
+          image(roach2, this.x, this.y, this.sizeW, this.sizeH);
+        }
+      }
     }
-    if (this.y > height + 100) {
-      this.y = 0;
-    }
-    if (this.y < 0 - 100) {
-      this.y = height;
-    }
-  }
-  switchState() {
-    this.state = 1;
-  }
-  stop() {
-    this.speedX = 0;
-    this.speedY = 0;
-  }
-}
+    move() {
+      this.x += this.speedX;
+      this.y += this.speedY;
 
-function draw() {
-  background(0);
-  // mirrorScene();
-  // roachPuzzle();
-  // windowScene();
-  // masterScene();
-  radioPuzzle();
-  if (hasKey === false) {
-    image(handCursor, mouseX, mouseY, 100, 100);
-  }
-  else {
-    image(keyCursor, mouseX, mouseY, 100, 100);
+      if (this.x > width + 100) {
+        this.x = 0;
+      }
+      if (this.x < 0 - 100) {
+        this.x = width;
+      }
+      if (this.y > height + 100) {
+        this.y = 0;
+      }
+      if (this.y < 0 - 100) {
+        this.y = height;
+      }
+    }
+    switchState() {
+      this.state = 1;
+    }
+    stop() {
+      this.speedX = 0;
+      this.speedY = 0;
+    }
   }
 
-  textSize(50);
-  stroke(255);
-  text("x:" + mouseX + "y:" + mouseY, 500, 500, 200, 200);
-}
+  function draw() {
+    background(0);
+    // mirrorScene();
+    // roachPuzzle();
+    // windowScene();
+    // radioPuzzle();
+    // doorScene();
+    masterScene();
+    // back();
+
+    if (hasKey === false) {
+      image(handCursor, mouseX - 10, mouseY - 10, 100, 100);
+    }
+    else {
+      image(keyCursor, mouseX, mouseY - 50, 100, 100);
+    }
+
+    // textSize(50);
+    // text("x:" + mouseX + "y:" + mouseY, 500, 500, 200, 200);
+  }
