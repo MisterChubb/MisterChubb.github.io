@@ -5,6 +5,7 @@
 
 // ----------------------- GLOBAL VARIABLES --------------------------
 let handCursor;
+let keyCursor;
 let pixelFont;
 
 // MIRROR SCENE VARIABLES
@@ -42,12 +43,21 @@ let rows = overlayGrid.length;
 let cols = overlayGrid[0].length;
 let tileSize = 50;
 let faceLayer;
+
+let radioImages = [];
+let radioCode = [];
+let radioState = 0;
+let hasKey = false;
+
+let fullBathroom;
+let scene = "radio"; // 
 // -------------------------------------------------------------------
 async function setup() {
   createCanvas(1000, 1000);
-  noCursor();
+  // noCursor();
   pixelFont = await loadFont("Assets/Fonts/pixel2.ttf"); // Load new font
   handCursor = await loadImage("Assets/cursor.PNG");
+  keyCursor = await loadImage("Assets/key.PNG");
   faceLayer = createGraphics(width, height);
 
 
@@ -56,7 +66,7 @@ async function setup() {
   roach = await loadImage("Assets/Roach_Puzzle/roach.PNG");
   roach2 = await loadImage("Assets/Roach_Puzzle/roach2.PNG");
 
-
+  bathroom = await loadImage("Assets/bathroom.PNG");
 
 
   for (let i = 1; i < 5; i++) { // Load mirror scene animation images
@@ -70,6 +80,10 @@ async function setup() {
   windowClosed = await loadImage("Assets/Window_Puzzle/window.PNG");
   for (let i = 2; i < 5; i++) {
     windowAni.push(await loadImage("Assets/Window_Puzzle/window" + i + ".PNG"));
+  }
+
+  for (let i = 1; i < 5; i++) {
+    radioImages.push(await loadImage("Assets/Radio_Puzzle/radio" + i + ".PNG"));
   }
 }
 
@@ -88,7 +102,7 @@ function mirrorScene() {
     t.move();
   }
   if (mouseIsPressed) {
-    stroke(255);
+    // stroke(255);
     strokeWeight(30);
     faceLayer.line(mouseX, mouseY, pmouseX, pmouseY);
   }
@@ -119,16 +133,15 @@ function roachPuzzle() {
 
 
 
-function inWindow(){
- if(mouseX > 517 && mouseX < 816 && mouseY > 185 && mouseY < 426 ){
-  return true;
- }
- else{
-  return false;
- }
+function inWindow() {
+  if (mouseX > 517 && mouseX < 816 && mouseY > 185 && mouseY < 426) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 function windowScene() {
-  
   if (windowState === 0) {
     image(windowClosed, 0, 0);
   }
@@ -150,7 +163,7 @@ function windowScene() {
 function windowPuzzle() {
   let x = getCurrentX();
   let y = getCurrentY();
-// print(x,y);
+  // print(x,y);
   // RENDER GRID
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
@@ -183,6 +196,82 @@ function getCurrentY() { // Determines the current row position of the mouse
   let constrainedY = constrain(mouseY - 185, 0, height - 1);
   return floor(constrainedY / tileSize);
 }
+
+function radioPuzzle() {
+  if (radioState === 0) {
+    image(radioImages[0], 0, 0);
+  }
+  if (radioCode[0] === 9 && radioCode[1] === 7 && radioState === 0) {
+    radioState = 1;
+  }
+  if (radioState === 1) {
+    image(radioImages[1], 0, 0);
+    if (mouseIsPressed && mouseX > 455 && mouseX < 540 && mouseY > 405 && mouseY < 460) {
+      radioState = 2;
+    }
+  }
+
+  if (radioState === 2) {
+    image(radioImages[2], 0, 0);
+    if (mouseIsPressed && mouseX > 405 && mouseX < 590 && mouseY > 535 && mouseY < 630) {
+      radioState = 3;
+      hasKey = true;
+    }
+  }
+  if (radioState === 3) {
+    image(radioImages[3], 0, 0);
+  }
+}
+
+function mousePressed() {
+  if (scene === "radio") {
+    if (mouseX > 560 && mouseX < 610 && mouseY > 625 && mouseY < 675) {
+      print("THIS WORKS!");
+      if (radioCode.length > 1) {
+        radioCode.length = 0;
+      }
+      else {
+        radioCode.push(7);
+      }
+    }
+    if (mouseX > 740 && mouseX < 795 && mouseY > 625 && mouseY < 675) {
+      print("THIS WORKS TOO!");
+      if (radioCode.length > 1) {
+        radioCode.length = 0;
+      }
+      else {
+        radioCode.push(9);
+      }
+    }
+  }
+}
+
+
+function masterScene() {
+  if (scene === "bathroom") {
+    image(bathroom, 0, 0)
+  }
+  if (mouseIsPressed && mouseX > 30 && mouseX < 333 && mouseY > 50 && mouseY < 400) {
+    scene = "window";
+  }
+  else if (mouseIsPressed && mouseX > 750 && mouseX < 970 && mouseY > 50 && mouseY < 300) {
+    scene = "painting";
+  }
+
+
+  if (scene === "window") {
+    windowScene();
+  }
+  else if (scene === "painting") {
+    roachPuzzle();
+  }
+}
+
+// function cursorType(){
+//   if(hasKey === false){
+
+//   }
+// }
 
 class FloatText {
   constructor() {
@@ -270,8 +359,19 @@ class Roaches {
 
 function draw() {
   background(0);
-  mirrorScene();
+  // mirrorScene();
   // roachPuzzle();
   // windowScene();
-  image(handCursor, mouseX, mouseY, 100, 100);
+  // masterScene();
+  radioPuzzle();
+  if (hasKey === false) {
+    image(handCursor, mouseX, mouseY, 100, 100);
+  }
+  else {
+    image(keyCursor, mouseX, mouseY, 100, 100);
+  }
+
+  textSize(50);
+  stroke(255);
+  text("x:" + mouseX + "y:" + mouseY, 500, 500, 200, 200);
 }
